@@ -32,10 +32,10 @@ public class Swerve extends SubsystemBase {
   private Field2d field;
 
   public Swerve() {
-    gyro1 = new Pigeon2(Constants.Swerve.pigeon1, "7130");
-    gyro2 = new Pigeon2(Constants.Swerve.pigeon1, "7130");
-    gyro3 = new Pigeon2(Constants.Swerve.pigeon1, "7130");
-    gyro4 = new Pigeon2(Constants.Swerve.pigeon1, "7130");
+    gyro1 = new Pigeon2(Constants.Swerve.pigeon1, "GTX7130");
+    gyro2 = new Pigeon2(Constants.Swerve.pigeon2, "GTX7130");
+    gyro3 = new Pigeon2(Constants.Swerve.pigeon3, "GTX7130");
+    gyro4 = new Pigeon2(Constants.Swerve.pigeon4, "GTX7130");
     zeroGyro();
 
     swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), pos);

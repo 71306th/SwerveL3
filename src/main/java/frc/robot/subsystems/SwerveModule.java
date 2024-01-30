@@ -53,7 +53,7 @@ public class SwerveModule extends SubsystemBase {
     angleOffset = moduleConstants.angleOffset;
 
     /* Angle Encoder Config */
-    angleEncoder = new CANcoder(moduleConstants.cancoderID, "7130");
+    angleEncoder = new CANcoder(moduleConstants.cancoderID, "GTX7130");
     configAngleEncoder();
 
     /* Angle Motor Config */

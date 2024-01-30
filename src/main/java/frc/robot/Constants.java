@@ -59,8 +59,8 @@ public final class Constants {
     public static final double openLoopRamp = 0.25;
     public static final double closedLoopRamp = 0.0;  // open loop means no feedback(PID), closed loop vise versa, not used actually
 
-    public static final double driveGearRatio = (6.7460317460317460317460317460317 / 1.0); // 6.75:1 (6.7460317460317460317460317460317), need to adjust
-    public static final double angleGearRatio = (150.0 / 7.0 / 1.0); // 150/7 : 1, need to adjust
+    public static final double driveGearRatio = (6.12244897959 / 1.0); // 6.12:1 (6.12244897959), for MK4i(L3)
+    public static final double angleGearRatio = (150.0 / 7.0 / 1.0); // 150/7 : 1, for MK4i(all)
 
     public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
         new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -96,7 +96,7 @@ public final class Constants {
     public static final double angleConversionFactor = 360.0 / angleGearRatio; // like constants in physics
 
     /* Swerve Profiling Values */
-    public static final double maxSpeed = 4.1; // meters per second
+    public static final double maxSpeed = 4.4; // meters per second
     public static final double maxAngularVelocity = 13.5; // meters per second
 
     /* Neutral Modes */
