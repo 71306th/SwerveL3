@@ -51,8 +51,8 @@ public final class Constants {
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
     /* Drivetrain Constants */
-    public static final double trackWidth = 0.576; // meters, length between two side's wheels, need to adjust
-    public static final double wheelBase = 0.576; // meters, length between same side's wheels, need to adjust
+    public static final double trackWidth = 0.583; // meters, length between two side's wheels, need to adjust
+    public static final double wheelBase = 0.583; // meters, length between same side's wheels, need to adjust
     public static final double wheelDiameter = Units.inchesToMeters(4.0); // need to adjust
     public static final double wheelCircumference = wheelDiameter * Math.PI;
 
@@ -91,7 +91,7 @@ public final class Constants {
     public static final double driveKA = 0.27; // feedforward, maybe need to adjust
 
     /* Drive Motor Conversion Factors */
-    public static final double driveConversionPositionFactor = (wheelDiameter * Math.PI) / driveGearRatio;
+    public static final double driveConversionPositionFactor = wheelCircumference / driveGearRatio;
     public static final double driveConversionVelocityFactor = driveConversionPositionFactor / 60.0;
     public static final double angleConversionFactor = 360.0 / angleGearRatio; // like constants in physics
 
@@ -125,7 +125,7 @@ public final class Constants {
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-134.0);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-131.572);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-0.79);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(137.5); // adjusted(2023/12/26)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(178.6); // adjusted(2023/12/26)
 
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, angleOffset);
@@ -139,7 +139,7 @@ public final class Constants {
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-6.2);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-6.5);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(140.5); // adjusted(2023/12/26)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(183.5); // adjusted(2023/12/26)
 
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, angleOffset);
@@ -154,7 +154,7 @@ public final class Constants {
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(15.21);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(1.5);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(14.7); // adjusted(2023/12/26)
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(132.7); // adjusted 2024/01/26
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(168.6); // adjusted 2024/01/26
 
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, angleOffset);
@@ -168,7 +168,7 @@ public final class Constants {
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-41.2);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-39.882);
       // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-4);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-98.5); // adjusted(2023/12/26)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(154.8); // adjusted(2023/12/26)
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, angleOffset);
     }

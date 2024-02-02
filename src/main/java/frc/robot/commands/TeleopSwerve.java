@@ -71,20 +71,21 @@ public class TeleopSwerve extends Command {
     }
 
     if (driver.getBackButton()) s_Swerve.zeroGyro();
+
     /* Drive */
     s_Swerve.drive(
         new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
         rotationVal * Constants.Swerve.maxAngularVelocity, Constants.Swerve.fieldOriented,
         true);
 
-    if(driver.getPOV() == 0) s_Swerve.mSwerveMods[0].setDriveMotor(1);
-    if(driver.getPOV() == 45) s_Swerve.mSwerveMods[0].setAngleMotor(0.3);
-    if(driver.getPOV() == 90) s_Swerve.mSwerveMods[1].setDriveMotor(1);
-    if(driver.getPOV() == 135) s_Swerve.mSwerveMods[1].setAngleMotor(0.3);
-    if(driver.getPOV() == 180) s_Swerve.mSwerveMods[2].setDriveMotor(1);
-    if(driver.getPOV() == 225) s_Swerve.mSwerveMods[2].setAngleMotor(0.3);
-    if(driver.getPOV() == 270) s_Swerve.mSwerveMods[3].setDriveMotor(1);
-    if(driver.getPOV() == 315) s_Swerve.mSwerveMods[3].setAngleMotor(0.3);
+    // if(driver.getPOV() == 0) s_Swerve.mSwerveMods[0].setDriveMotor(1);
+    // if(driver.getPOV() == 45) s_Swerve.mSwerveMods[0].setAngleMotor(0.3);
+    // if(driver.getPOV() == 90) s_Swerve.mSwerveMods[1].setDriveMotor(1);
+    // if(driver.getPOV() == 135) s_Swerve.mSwerveMods[1].setAngleMotor(0.30);
+    // if(driver.getPOV() == 180) s_Swerve.mSwerveMods[2].setDriveMotor(1);
+    // if(driver.getPOV() == 225) s_Swerve.mSwerveMods[2].setAngleMotor(0.3);
+    // if(driver.getPOV() == 270) s_Swerve.mSwerveMods[3].setDriveMotor(1);
+    // if(driver.getPOV() == 315) s_Swerve.mSwerveMods[3].setAngleMotor(0.3);
 
   }
 }

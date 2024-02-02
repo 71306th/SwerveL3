@@ -101,6 +101,7 @@ public class SwerveModule extends SubsystemBase {
   private void configAngleEncoder() {
     angleEncoderConfigurator = angleEncoder.getConfigurator();
     angleEncoderConfigurator.apply(CTREConfigs.CTREConfiguration(angleOffset.getDegrees()));
+    angleEncoder.setPosition(0);
   }
 
   private void configAngleMotor() {
