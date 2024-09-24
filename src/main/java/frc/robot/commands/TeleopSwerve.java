@@ -2,92 +2,93 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.FSLib.math.simplePID;
 import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 
 public class TeleopSwerve extends Command {
   private Swerve s_Swerve;
-  // private Joystick controller;
   private XboxController driver;
 
   private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
 
-  private boolean onePress1 = false;
-  private boolean onePress2 = false;
-
   private double translationVal;
   private double strafeVal;
   private double rotationVal;
 
-  public TeleopSwerve(Swerve s_Swerve) {
+  private simplePID zPID = new simplePID(2, 0);
+
+  public TeleopSwerve(Swerve s_Swerve, XboxController controller) {
     this.s_Swerve = s_Swerve;
+    this.driver = controller;
     addRequirements(s_Swerve);
-    driver = new XboxController(Constants.JoystickConstants.kDriverControllerPort);
   }
 
   @Override
   public void execute() {
-    /* Get Values, Deadband*/
-    if (Constants.Swerve.slow) {
-      translationVal =
-          translationLimiter.calculate(
-              MathUtil.applyDeadband(driver.getLeftY() * 0.5, Constants.Swerve.axisDeadBand));
-      strafeVal =
-          strafeLimiter.calculate(
-              MathUtil.applyDeadband(driver.getLeftX() * 0.5, Constants.Swerve.axisDeadBand));
-      rotationVal =
-          rotationLimiter.calculate(
-              MathUtil.applyDeadband(driver.getRightX() * 0.25, Constants.Swerve.axisDeadBand));
-    } else {
-      translationVal =
-          translationLimiter.calculate(
-              MathUtil.applyDeadband(driver.getLeftY(), Constants.
-              Swerve.axisDeadBand));
-      strafeVal =
-          strafeLimiter.calculate(
-              MathUtil.applyDeadband(driver.getLeftX(), Constants.Swerve.axisDeadBand));        
-      rotationVal =
-          rotationLimiter.calculate(
-              MathUtil.applyDeadband(driver.getRightX() * 0.5, Constants.Swerve.axisDeadBand));
-    }
-    
-    if (driver.getLeftBumperPressed() && onePress1==false) {
-      Constants.Swerve.fieldOriented = !Constants.Swerve.fieldOriented;
-      onePress1 = true;
-    }else if(driver.getLeftBumperReleased()) {
-      onePress1 = false;
+
+    if (driver.getBackButton()) {
+      s_Swerve.setYaw(Rotation2d.fromDegrees(0));
+      s_Swerve.setPose(new Pose2d());
     }
 
-    if (driver.getRightBumperPressed() && onePress2==false) {
-      Constants.Swerve.slow = !Constants.Swerve.slow;
-      onePress2 = true;
-    }else if(driver.getRightBumperReleased()) {
-      onePress2 = false;
-    }
+    /* Get Values, Deadband */
+    translationVal = translationLimiter.calculate(
+        MathUtil.applyDeadband(-driver.getLeftY(), Constants.SwerveConstants.axisDeadBand));
+    strafeVal = strafeLimiter.calculate(
+        MathUtil.applyDeadband(-driver.getLeftX(), Constants.SwerveConstants.axisDeadBand));
+    rotationVal = 
+      rotationLimiter
+        .calculate(MathUtil.applyDeadband(-driver.getRightX() * 0.3, Constants.SwerveConstants.axisDeadBand));
 
-    if (driver.getBackButton()) s_Swerve.zeroGyro();
+    // if (driver.getLeftBumper()) {
 
-    /* Drive */
-    s_Swerve.drive(
-        new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
-        rotationVal * Constants.Swerve.maxAngularVelocity, Constants.Swerve.fieldOriented,
-        true);
+    //   double zTarget;
+    //   if (DriverStation.getAlliance().isPresent() ) {
+    //     if (DriverStation.getAlliance().get() == Alliance.Blue) {
+    //       zTarget = FieldConstants.blueSpeakerCoord.minus(s_Swerve.getOdometryPose().getTranslation()).getAngle().getRotations();
+    //     } else {
+    //       zTarget = FieldConstants.redSpeakerCoord.minus(s_Swerve.getOdometryPose().getTranslation()).getAngle().getRotations();
+    //     }
+    //   } else {
+    //     zTarget = s_Swerve.getYaw().getRotations()-4p;
+    //   }
 
-    // if(driver.getPOV() == 0) s_Swerve.mSwerveMods[0].setDriveMotor(1);
-    // if(driver.getPOV() == 45) s_Swerve.mSwerveMods[0].setAngleMotor(0.3);
-    // if(driver.getPOV() == 90) s_Swerve.mSwerveMods[1].setDriveMotor(1);
-    // if(driver.getPOV() == 135) s_Swerve.mSwerveMods[1].setAngleMotor(0.30);
-    // if(driver.getPOV() == 180) s_Swerve.mSwerveMods[2].setDriveMotor(1);
-    // if(driver.getPOV() == 225) s_Swerve.mSwerveMods[2].setAngleMotor(0.3);
-    // if(driver.getPOV() == 270) s_Swerve.mSwerveMods[3].setDriveMotor(1);
-    // if(driver.getPOV() == 315) s_Swerve.mSwerveMods[3].setAngleMotor(0.3);
+      // double z = s_Swerve.getYaw().getRotations();
+      // z -= Math.floor(z);
+      // if (z > 0.5) z -= 1;
+      // s_Swerve.drive(
+      //   new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxModuleSpeed),
+      //   zPID.calculate(z, zTarget) * SwerveConstants.maxAngularVelocity,
+      //   true,
+      //   false
+      // );
 
+    // } else {
+      s_Swerve.drive(
+        new Translation2d(translationVal, strafeVal),
+        rotationVal * Constants.SwerveConstants.maxAngularVelocity, true,
+        true
+      );
+    // }
+  }
+
+  @Override
+  public void end(boolean interrupted){
+  }
+
+  @Override
+  public boolean isFinished(){
+    return false;
   }
 }
-
-// SmartDashboard.putBoolean("isOriented", Constants.Swerve.fieldOriented);

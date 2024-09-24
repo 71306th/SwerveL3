@@ -1,4 +1,4 @@
-package frc.ChenryLib;
+package frc.FSLib.math;
 
 public class FeedForward {
         private double kA, kV, kP_Pos, kP_Vel, kS;

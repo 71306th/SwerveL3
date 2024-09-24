@@ -1,4 +1,4 @@
-package frc.ChenryLib;
+package frc.FSLib.swerve;
 
 public class MathUtility {
     //private double encTpr = 42;
@@ -8,7 +8,6 @@ public class MathUtility {
     //2.083 rotation on mid gear = 8.3 rotaions on motor
     //8.3 rotations = 8.3 * 42 ticks
     
-
     //private double ticksPerWheelRevolution = encTpr * 50 / 24 * 48 / 12;
     private double ticksPerWheelRevolution = 350;
     private double wheelCircumference = 4 * 2.54 * Math.PI / 100 ;
@@ -25,7 +24,7 @@ public class MathUtility {
         return radians / Math.PI * 180;
     }
     public static double constrainAngleDegrees(double angle){
-    return Math.atan2(Math.sin(angle / 180.0 * 3.14159265358979323846), Math.cos(angle / 180.0 * 3.14159265358979323846)) * 180/3.14159265358979323846;
+        return Math.atan2(Math.sin(angle / 180.0 * Math.PI), Math.cos(angle / 180.0 * Math.PI)) * 180 / Math.PI;
     }
 
     public static double clamp(double value, double min, double max){

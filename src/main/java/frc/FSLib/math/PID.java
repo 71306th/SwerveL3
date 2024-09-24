@@ -1,4 +1,4 @@
-package frc.ChenryLib;
+package frc.FSLib.math;
 
 public class PID {
     private double lastError = 0, d = 0, i = 0;

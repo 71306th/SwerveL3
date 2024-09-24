@@ -1,14 +1,14 @@
-package frc.lib.util;
+package frc.FSLib.config;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 
 /** Sets motor usage for a Spark Max motor controller */
-public class CANSparkMaxUtil {
+public class CANSparkMaxConfig {
   public enum Usage {
     kAll,
-    kPositionOnly,
     kVelocityOnly,
+    kPositionOnly,
     kMinimal
   };
 
@@ -17,7 +17,7 @@ public class CANSparkMaxUtil {
    * frame period of nonessential frames from 20ms to 500ms.
    *
    * <p>See
-   * https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces#periodic-status-frames
+   * https://docs.revrobotics.com/brushless/spark-max/control-interfaces#periodic-status-frames
    * for a description of the status frames.
    *
    * @param motor The motor to adjust the status frame periods on.
@@ -35,21 +35,25 @@ public class CANSparkMaxUtil {
 
     if (usage == Usage.kAll) {
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
-      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
-      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
-    } else if (usage == Usage.kPositionOnly) {
-      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
-      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 100);
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
     } else if (usage == Usage.kVelocityOnly) {
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 500);
+      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
+    } else if (usage == Usage.kPositionOnly) {
+      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
+      motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
     } else if (usage == Usage.kMinimal) {
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 500);
       motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
     }
+
+    motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus4, 500);
+    motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 500);
+    motor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus6, 500);
   }
 
   /**
@@ -57,7 +61,7 @@ public class CANSparkMaxUtil {
    * frame period of nonessential frames from 20ms to 500ms.
    *
    * <p>See
-   * https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces#periodic-status-frames
+   * https://docs.revrobotics.com/brushless/spark-max/control-interfaces#periodic-status-frames
    * for a description of the status frames.
    *
    * @param motor The motor to adjust the status frame periods on.

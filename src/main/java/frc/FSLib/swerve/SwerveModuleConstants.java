@@ -1,4 +1,4 @@
-package frc.lib.config;
+package frc.FSLib.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
