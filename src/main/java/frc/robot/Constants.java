@@ -88,7 +88,7 @@ public final class Constants {
     public static final double angleGearRatio = (150.0 / 7.0 / 1.0); // 150/7 : 1, for MK4i(all)
     public static final double steerReduction = (14.0 / 50.0) * (10.0 / 60.0);
 
-    /* Swerve Voltage Compensation */ // nigga
+    /* Swerve Voltage Compensation */
     public static final double voltageComp = 12.0;
 
     /* Swerve Current Limiting */
