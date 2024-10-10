@@ -5,9 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.CANSparkBase.IdleMode;
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.math.util.Units.inchesToMeters;
@@ -40,17 +38,24 @@ public final class Constants {
 
   public static final class FieldConstants {
     public static final Pose2d BLUE_LB = 
-      new Pose2d(new Translation2d(0.7, 6.7), Rotation2d.fromDegrees(60));
+      new Pose2d(new Translation2d(0.7, 6.70), Rotation2d.fromDegrees(60));
     public static final Pose2d BLUE_MB =
-      new Pose2d(new Translation2d(1.37, 5.5), Rotation2d.fromDegrees(0));
+      new Pose2d(new Translation2d(1.37, 5.50), Rotation2d.fromDegrees(0));
     public static final Pose2d BLUE_RB =
-      new Pose2d(new Translation2d(0.7, 4.4), Rotation2d.fromDegrees(-60));
+      new Pose2d(new Translation2d(0.7, 4.40), Rotation2d.fromDegrees(-60));
     public static final Pose2d RED_LB =
       new Pose2d(new Translation2d(15.85, 4.38), Rotation2d.fromDegrees(-120));
     public static final Pose2d RED_MB =
-      new Pose2d(new Translation2d(15.17, 5.5), Rotation2d.fromDegrees(-180));
+      new Pose2d(new Translation2d(15.17, 5.50), Rotation2d.fromDegrees(-180));
     public static final Pose2d RED_RB =
       new Pose2d(new Translation2d(15.85, 6.75), Rotation2d.fromDegrees(-120));
+
+    public static final Pose2d X1 =
+      new Pose2d(new Translation2d(2.56, 6.99), Rotation2d.fromDegrees(0));
+    public static final Pose2d X2 =
+      new Pose2d(new Translation2d(2.56, 5.55), Rotation2d.fromDegrees(0));
+    public static final Pose2d X3 =
+      new Pose2d(new Translation2d(2.56, 4.10), Rotation2d.fromDegrees(0));
   }
 
   // public static enum UpperState {
@@ -196,15 +201,6 @@ public static final class Mod3 {
     public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
 }
 
-    public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-        new PIDConstants(3, 0, 0.005), // Translation constants 
-        new PIDConstants(0.5, 0, 0), // Rotation constants 
-        maxModuleSpeed, 
-        LFModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module) 
-        new ReplanningConfig(true, // Should the path be replanned at the start of path following if the robot is not already at the starting point?
-         true) // Should the path be replanned if the error grows too large or if a large error spike happens while following the path?
-    );
-
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
       SwerveConstants.LFModuleOffset, 
       SwerveConstants.RFModuleOffset, 
@@ -219,6 +215,9 @@ public static final class Mod3 {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 
         (MAX_VELOCITY_METERS_PER_SECOND /
         Math.hypot(trackWidth / 2.0, wheelBase / 2.0));
+
+  public static final PIDConstants translationConstants = new PIDConstants(3, 0.0, 0.0); // need adjust
+  public static final PIDConstants rotationConstants = new PIDConstants(0.5, 0.0, 0.0);
 }
 public static class VisionConstants {
 

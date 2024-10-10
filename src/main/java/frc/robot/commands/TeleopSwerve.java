@@ -16,7 +16,7 @@ import frc.robot.subsystems.Swerve;
 
 public class TeleopSwerve extends Command {
   private Swerve s_Swerve;
-  private XboxController driver;
+  private XboxController controller;
 
   private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
@@ -30,32 +30,32 @@ public class TeleopSwerve extends Command {
 
   public TeleopSwerve(Swerve s_Swerve, XboxController controller) {
     this.s_Swerve = s_Swerve;
-    this.driver = controller;
+    this.controller = controller;
     addRequirements(s_Swerve);
   }
 
   @Override
   public void execute() {
 
-    if (driver.getBackButton()) {
+    if (controller.getBackButton()) {
       s_Swerve.setYaw(Rotation2d.fromDegrees(0));
       s_Swerve.setPose(new Pose2d());
     }
 
     /* Get Values, Deadband */
     translationVal = translationLimiter.calculate(
-        MathUtil.applyDeadband(-driver.getLeftY(), Constants.SwerveConstants.axisDeadBand));
+        MathUtil.applyDeadband(-controller.getLeftY(), Constants.SwerveConstants.axisDeadBand));
     strafeVal = strafeLimiter.calculate(
-        MathUtil.applyDeadband(-driver.getLeftX(), Constants.SwerveConstants.axisDeadBand));
+        MathUtil.applyDeadband(-controller.getLeftX(), Constants.SwerveConstants.axisDeadBand));
     rotationVal = 
       rotationLimiter
-        .calculate(MathUtil.applyDeadband(-driver.getRightX() * 0.3, Constants.SwerveConstants.axisDeadBand));
+        .calculate(MathUtil.applyDeadband(-controller.getRightX() * 0.3, Constants.SwerveConstants.axisDeadBand));
 
-    // if (driver.getLeftBumper()) {
+    // if (controller.getLeftBumper()) {
 
     //   double zTarget;
-    //   if (DriverStation.getAlliance().isPresent() ) {
-    //     if (DriverStation.getAlliance().get() == Alliance.Blue) {
+    //   if (controllerStation.getAlliance().isPresent() ) {
+    //     if (controllerStation.getAlliance().get() == Alliance.Blue) {
     //       zTarget = FieldConstants.blueSpeakerCoord.minus(s_Swerve.getOdometryPose().getTranslation()).getAngle().getRotations();
     //     } else {
     //       zTarget = FieldConstants.redSpeakerCoord.minus(s_Swerve.getOdometryPose().getTranslation()).getAngle().getRotations();
@@ -76,9 +76,10 @@ public class TeleopSwerve extends Command {
 
     // } else {
       s_Swerve.drive(
-        new Translation2d(translationVal, strafeVal),
-        rotationVal * Constants.SwerveConstants.maxAngularVelocity, true,
-        true
+        new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxModuleSpeed),
+        rotationVal * Constants.SwerveConstants.maxAngularVelocity,
+         true,
+        false
       );
     // }
   }

@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 1.407706324685116,
-        "y": 5.515804013063089
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.407706324685116,
-        "y": 6.159900023081073
+        "y": 6.194096010017984
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MB"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "X1"
     }
   ],
   "rotationTargets": [],

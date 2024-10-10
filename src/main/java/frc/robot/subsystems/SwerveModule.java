@@ -41,9 +41,13 @@ public class SwerveModule extends SubsystemBase {
 
   private final SparkPIDController driveController;
 
-  private final SimpleMotorFeedforward FeedForward = new SimpleMotorFeedforward(Constants.SwerveConstants.driveKS, Constants.SwerveConstants.driveKV, Constants.SwerveConstants.driveKA);
+  private final SimpleMotorFeedforward FeedForward = new SimpleMotorFeedforward(
+    Constants.SwerveConstants.driveKS, 
+    Constants.SwerveConstants.driveKV, 
+    Constants.SwerveConstants.driveKA);
 
   public static double desiredstate;
+
   public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants) {
     this.moduleNumber = moduleNumber;
     angleOffset = moduleConstants.angleOffset;
@@ -104,7 +108,8 @@ public class SwerveModule extends SubsystemBase {
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
     desiredState = OnboardModuleState.optimize(desiredState, getState().angle);
   
-    Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxModuleSpeed * 0.01)) 
+    Rotation2d angle = 
+    (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxModuleSpeed * 0.01)) 
       ? lastAngle
       : desiredState.angle;
 
