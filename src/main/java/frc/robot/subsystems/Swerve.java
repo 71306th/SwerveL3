@@ -11,6 +11,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -32,6 +35,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.RobotConstants;
 
 public class Swerve extends SubsystemBase {
+      
+  RobotConfig config;
+
   private static Swerve mInstance;
 
   private final Pigeon2 gyro = new Pigeon2(SwerveConstants.pigeon1, RobotConstants.canbusName);
@@ -59,40 +65,53 @@ public class Swerve extends SubsystemBase {
 
   ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
-  // private final StructArrayPublisher<SwerveModuleState> publisher;
+  private final SwerveSetpointGenerator setpointGenerator;
+
+  private SwerveSetpoint previousSetpoint;
 
   public Swerve() {
+
     gyro.setYaw(0);
 
-    try{
-    RobotConfig config = RobotConfig.fromGUISettings();
+        try{
+          config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+          // Handle exception as needed
+          e.printStackTrace();
+        }
 
-    AutoBuilder.configure(
-      this::getPoseEstimated, // Robot pose supplier (getOdometryPose or getPoseEstimated)
-      this::resetOdometryPose,  // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      new PPHolonomicDriveController(
-          Constants.SwerveConstants.translationConstants,
-          Constants.SwerveConstants.rotationConstants
-        ), 
-      config,
-      () -> {
-          if (DriverStation.getAlliance().isPresent()) return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+      AutoBuilder.configure(
+        this::getPoseEstimated, // Robot pose supplier (getOdometryPose or getPoseEstimated)
+        this::resetOdometryPose,  // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new PPHolonomicDriveController(
+            Constants.SwerveConstants.translationConstants,
+            Constants.SwerveConstants.rotationConstants
+          ), 
+        config,
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
           return false;
-      },
-      this
-    );
-  }catch(Exception e){
-    DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
-  }
+        },
+        this
+      );
 
-  // Set up custom logging to add the current path to a field 2d widget
-  PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
+    setpointGenerator = new SwerveSetpointGenerator(
+                config, // The robot configuration. This is the same config used for generating trajectories and running path following commands.
+                Units.rotationsToRadians(10.0) // The max rotation velocity of a swerve module in radians per second. This should probably be stored in your Constants file
+            );
 
-  SmartDashboard.putData("Field", m_field);
-    }
-  
+        // Initialize the previous setpoint to the robot's current speeds & module states
+        ChassisSpeeds currentSpeeds = getRobotRelativeSpeeds(); // Method to get current robot-relative chassis speeds
+        SwerveModuleState[] currentStates = getStates(); // Method to get the current swerve module states
+        previousSetpoint = new SwerveSetpoint(currentSpeeds, currentStates, null);
+
+  SmartDashboard.putData("Field_Swerve", m_field);
+}
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
@@ -134,9 +153,19 @@ public class Swerve extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-    SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-    setModuleStates(targetStates);
+    // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    // SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
+    // setModuleStates(targetStates);
+
+    /* Swerve Setpoint Grnerator */
+    // Note: it is important to not discretize speeds before or after
+    // using the setpoint generator, as it will discretize them for you
+      previousSetpoint = setpointGenerator.generateSetpoint(
+      previousSetpoint, // The previous setpoint
+      robotRelativeSpeeds, // The desired target speeds
+      0.02 // The loop time of the robot code, in seconds
+      );
+      setModuleStates(previousSetpoint.moduleStates()); // Method that will drive the robot given target module states
   }
 
   public ChassisSpeeds getSpeeds() {
@@ -214,12 +243,11 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     updateSwervePoses();
-    // m_field.setRobotPose(mRobotPose);
+    m_field.setRobotPose(mRobotPose);
     // m_field.getObject("Swerve Modules Pose").setPoses(mModulePoses);
     
     swerveOdometry.update(getYaw(), getPositions());
     AngularVel = Math.max(gyro.getAngularVelocityZWorld().getValueAsDouble(), AngularVel);
-    m_field.setRobotPose(getOdometryPose());
     tab.add("Yaw", getGyroscopeRotation())
       .withSize(2, 4)
       .withPosition(0, 0);

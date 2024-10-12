@@ -19,6 +19,7 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,6 +29,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,6 +61,8 @@ public class RobotContainer {
 
   // private ShuffleboardTab SwerveTab = Shuffleboard.getTab("SwerveTab");
 
+  private Field2d field_PP = new Field2d();
+
   public RobotContainer() {
     s_Swerve.setDefaultCommand(teleopSwerve);
     // s_Swerve.setDefaultCommand(aimSwerve);
@@ -89,6 +93,27 @@ public class RobotContainer {
 
     // Pose estimation
     poseEstimator.addDashboardWidgets(visionTab);
+
+    // Field base on PathPlanner
+    SmartDashboard.putData("Field_PP", field_PP);
+
+    // Logging callback for current robot pose
+    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+        // Do whatever you want with the pose here
+        field_PP.setRobotPose(pose);
+    });
+
+    // Logging callback for target robot pose
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+        // Do whatever you want with the pose here
+        field_PP.getObject("target pose").setPose(pose);
+    });
+
+    // Logging callback for the active path, this is sent as a list of poses
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+        // Do whatever you want with the poses here
+        field_PP.getObject("path").setPoses(poses);
+    });
   }
 
   private void configureBindings() {
@@ -122,7 +147,7 @@ public class RobotContainer {
     ).andThen(new OneSec()));
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
-    // This example will simply move the robot 1m in the +X field direction
+    // This example will simply move the robot 1m in the +X Field_PP direction
     SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
       Pose2d currentPose = s_Swerve.getOdometryPose();
       
