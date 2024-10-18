@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6600227691045375,
+        "x": 1.9357863438627994,
         "y": 5.55
       },
       "isLocked": false,
@@ -16,32 +16,21 @@
     },
     {
       "anchor": {
-        "x": 2.5553683061717036,
+        "x": 2.59,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.168733303958773,
+        "x": 2.09240085766932,
         "y": 5.55
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "X2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "marke1",
-      "waypointRelativePos": 0.65,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -56,7 +45,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -0.6510603802295555,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

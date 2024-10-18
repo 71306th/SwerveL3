@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
   public Swerve() {
 
     gyro.setYaw(0);
-
+    
         try{
           config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
